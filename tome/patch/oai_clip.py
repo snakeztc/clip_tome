@@ -162,7 +162,11 @@ def make_tome_class(transformer_class):
         - Initialize r, token size, and token sources.
         """
         def encode_image(self, *args, **kwdargs) -> torch.Tensor:
-            self._tome_info["r"] = parse_r(len(self.visual.transformer.resblocks), self.r)
+            if isinstance(self.r, int):
+                self._tome_info["r"] = parse_r(len(self.visual.transformer.resblocks), self.r)
+            else:
+                assert len(self.visual.transformer.resblocks) == len(self.r)
+                self._tome_info["r"] = self.r
             self._tome_info["size"] = None
             self._tome_info["source"] = None
 
